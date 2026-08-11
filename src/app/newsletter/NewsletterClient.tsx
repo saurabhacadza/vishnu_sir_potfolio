@@ -82,8 +82,10 @@ export default function NewsletterClient() {
           <p className="newsletter-eyebrow">Vidya Bhumi Newsletter</p>
           <h1 className="newsletter-title">The Thinking Student</h1>
           <p className="newsletter-lede">
-            Fresh problems, sharp concepts, and study insights — a new issue lands here regularly.
-            Read online or download and dive in.
+            <strong>
+              Stories, ideas, and lessons that help you think more deeply about mathematics. A new
+              issue every Wednesday.
+            </strong>
           </p>
         </div>
       </section>
