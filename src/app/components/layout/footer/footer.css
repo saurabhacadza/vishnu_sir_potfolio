@@ -1,0 +1,103 @@
+.footer {
+  background: linear-gradient(180deg, rgba(6, 15, 31, 0.92), rgba(0, 33, 55, 0.95));
+  padding: var(--space-32, 32px) 0 var(--space-16, 16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.footer-content {
+  text-align: center;
+}
+
+.footer-logo {
+  font-size: var(--font-size-2xl, 2rem);
+  font-weight: var(--font-weight-bold, 700);
+  color: #fefefe;
+  margin-bottom: var(--space-16, 16px);
+}
+
+.footer-tagline {
+  opacity: 0.85;
+  margin-bottom: var(--space-24, 24px);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-24, 24px);
+  margin-bottom: var(--space-24, 24px);
+}
+
+.social-link {
+  font-size: var(--font-size-2xl, 2rem);
+  text-decoration: none;
+  transition: all var(--duration-fast, 180ms) var(--ease-standard, ease);
+  padding: var(--space-16, 16px);
+  border-radius: var(--radius-full, 999px);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fefefe;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-link:hover {
+  transform: translateY(-5px) scale(1.1);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 24px rgba(255, 255, 255, 0.18);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: var(--space-24, 24px);
+  opacity: 0.6;
+}
+
+.footer-bottom p {
+  margin-bottom: var(--space-8, 8px);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+html[data-theme='light'] .footer {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(248, 250, 255, 0.95));
+  border-top-color: rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme='light'] .footer-logo {
+  color: #0f172a;
+}
+
+html[data-theme='light'] .footer-tagline {
+  color: rgba(15, 23, 42, 0.75);
+}
+
+html[data-theme='light'] .social-link {
+  background: rgba(15, 23, 42, 0.05);
+  color: #0f172a;
+  border-color: rgba(15, 23, 42, 0.15);
+}
+
+html[data-theme='light'] .social-link:hover {
+  background: rgba(15, 23, 42, 0.18);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+}
+
+html[data-theme='light'] .footer-bottom {
+  border-top-color: rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme='light'] .footer-bottom p {
+  color: rgba(15, 23, 42, 0.65);
+}
+
+@media (max-width: 1024px) {
+  .social-links {
+    gap: var(--space-16, 16px);
+  }
+
+  .social-link {
+    padding: var(--space-12, 12px);
+    font-size: var(--font-size-xl, 1.25rem);
+  }
+}
