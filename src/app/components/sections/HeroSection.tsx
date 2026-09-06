@@ -182,6 +182,10 @@ export default function HeroSection() {
                     required
                   >
                     <option value="">Select Class</option>
+                    <option value="5">5th Grade</option>
+                    <option value="6">6th Grade</option>
+                    <option value="7">7th Grade</option>
+                    <option value="8">8th Grade</option>
                     <option value="9">9th Grade</option>
                     <option value="10">10th Grade</option>
                     <option value="11">11th Grade</option>
@@ -204,7 +208,9 @@ export default function HeroSection() {
                     <option value="">Select Subject</option>
                     <option value="math">Mathematics</option>
                     <option value="biology">Biology</option>
-                    <option value="both">Both</option>
+                    <option value="physics">Physics</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="accountancy">Accountancy</option>
                   </select>
                 </div>
               </div>
