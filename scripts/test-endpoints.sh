@@ -40,7 +40,12 @@ check "image bad prefix"     "$(code "$BASE/api/drive-image?key=../etc/passwd")"
 check "image missing params" "$(code "$BASE/api/drive-image")" "400"
 
 echo
-echo "4. Cover falls back when no image exists"
+echo "4. Upload endpoint is locked down"
+check "upload without token"  "$(curl -s -o /dev/null -w '%{http_code}' -m 25 -X POST "$BASE/api/newsletter-upload")" "401"
+check "upload with bad token" "$(curl -s -o /dev/null -w '%{http_code}' -m 25 -X POST -H 'x-upload-token: nope' "$BASE/api/newsletter-upload")" "401"
+
+echo
+echo "5. Cover falls back when no image exists"
 check "placeholder cover"    "$(code "$BASE/api/newsletter-thumb?key=newsletters/Nothing_Here.pdf")" "200"
 
 echo
