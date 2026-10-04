@@ -1,15 +1,14 @@
 // src/app/api/newsletters/route.ts
-// Lists newsletter PDFs from the public Google Drive folder.
+// Lists newsletter PDFs from the S3 bucket.
 // Fetched fresh on every request, so new uploads appear instantly.
 import { NextResponse } from 'next/server'
-import { DRIVE_API_KEY, NEWSLETTER_FOLDER_ID } from '@/lib/newsletterConfig'
+import { ListObjectsV2Command } from '@aws-sdk/client-s3'
+import { NEWSLETTER_PREFIX, S3_BUCKET, s3, s3Configured, titleFromKey } from '@/lib/s3'
 
 export const dynamic = 'force-dynamic'
 
-const FOLDER_ID = NEWSLETTER_FOLDER_ID
-const API_KEY = DRIVE_API_KEY
-
 export type NewsletterFile = {
+  // The S3 object key. Named `id` so the client keeps working unchanged.
   id: string
   name: string
   title: string
@@ -19,56 +18,49 @@ export type NewsletterFile = {
 }
 
 export async function GET() {
-  if (!FOLDER_ID || !API_KEY) {
+  if (!s3Configured()) {
     return NextResponse.json(
       { success: false, error: 'Newsletter feed is not configured', newsletters: [] },
       { status: 500 }
     )
   }
 
-  const params = new URLSearchParams({
-    q: `'${FOLDER_ID}' in parents and mimeType='application/pdf' and trashed=false`,
-    fields: 'files(id,name,createdTime,modifiedTime,size)',
-    orderBy: 'createdTime desc',
-    pageSize: '100',
-    key: API_KEY,
-  })
-
   try {
-    const res = await fetch(`https://www.googleapis.com/drive/v3/files?${params}`, {
-      cache: 'no-store',
-    })
+    const res = await s3().send(
+      new ListObjectsV2Command({
+        Bucket: S3_BUCKET,
+        Prefix: NEWSLETTER_PREFIX,
+        MaxKeys: 100,
+      })
+    )
 
-    if (!res.ok) {
-      const detail = await res.text()
-      console.error('Drive newsletter fetch failed', res.status, detail)
-      return NextResponse.json(
-        { success: false, error: 'Unable to load newsletters right now', newsletters: [] },
-        { status: 502 }
-      )
-    }
-
-    const data = (await res.json()) as { files?: Omit<NewsletterFile, 'title'>[] }
-
-    const newsletters: NewsletterFile[] = (data.files ?? []).map((f) => ({
-      ...f,
-      // "The_Thinking_Student_Vol-1.pdf" -> "The Thinking Student Vol-1"
-      title: f.name.replace(/\.pdf$/i, '').replace(/[_]+/g, ' ').trim(),
-    }))
+    const newsletters: NewsletterFile[] = (res.Contents ?? [])
+      .filter((o) => o.Key && /\.pdf$/i.test(o.Key))
+      .map((o) => {
+        const key = o.Key as string
+        // S3 has no separate creation date, so last-modified serves as both.
+        const when = (o.LastModified ?? new Date()).toISOString()
+        return {
+          id: key,
+          name: key.slice(key.lastIndexOf('/') + 1),
+          title: titleFromKey(key),
+          createdTime: when,
+          modifiedTime: when,
+          size: o.Size != null ? String(o.Size) : undefined,
+        }
+      })
+      // Newest issue first, matching the old Drive ordering.
+      .sort((a, b) => new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime())
 
     return NextResponse.json(
       { success: true, newsletters },
-      {
-        headers: {
-          'Cache-Control': 'no-store',
-        },
-      }
+      { headers: { 'Cache-Control': 'no-store' } }
     )
   } catch (error) {
-    console.error('Drive newsletter fetch errored', error)
+    console.error('S3 newsletter list failed', error)
     return NextResponse.json(
       { success: false, error: 'Unable to load newsletters right now', newsletters: [] },
-      { status: 500 }
+      { status: 502 }
     )
   }
 }
