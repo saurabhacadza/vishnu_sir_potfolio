@@ -8,6 +8,12 @@ frontend:
         - npm ci
     build:
       commands:
+        # Amplify exposes these to the build container only. Next.js server
+        # code runs later in Lambda, which never sees them, so copy the ones
+        # the app needs into .env.production for the build to bake in.
+        # Server-only values: Next.js exposes NEXT_PUBLIC_* to the browser,
+        # nothing else.
+        - env | grep -E '^(S3_BUCKET|S3_REGION|S3_NEWSLETTER_PREFIX|S3_IMAGE_PREFIX|UPLOAD_TOKEN)=' >> .env.production || true
         - npm run build
   artifacts:
     # SSR build: Amplify serves .next via Hosting compute.
