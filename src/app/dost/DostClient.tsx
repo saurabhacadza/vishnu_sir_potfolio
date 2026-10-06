@@ -280,7 +280,7 @@ export default function DostClient() {
           font-size: 16px;
           color: #14233f;
           background: #f8f9fb;
-          border: 1px solid #e4e7ec;
+          border: 1.5px solid #14233f;
           border-radius: 10px;
           outline: none;
           transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -291,8 +291,8 @@ export default function DostClient() {
         }
 
         .popupContent input:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+          border-color: #1a8cff;
+          box-shadow: 0 0 0 3px rgba(26, 140, 255, 0.18);
         }
 
         .popupContent button {
