@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DostClient from "./DostClient";
 
 export const metadata: Metadata = {
-  title: "Vidya Bhumi Dost",
+  title: "Vidya Bhumi",
   description: "Vidya Bhumi Dost iframe login wrapper",
 };
 
