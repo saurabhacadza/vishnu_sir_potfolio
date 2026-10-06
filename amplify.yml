@@ -13,7 +13,7 @@ frontend:
         # the app needs into .env.production for the build to bake in.
         # Server-only values: Next.js exposes NEXT_PUBLIC_* to the browser,
         # nothing else.
-        - env | grep -E '^(S3_BUCKET|S3_REGION|S3_NEWSLETTER_PREFIX|S3_IMAGE_PREFIX|UPLOAD_TOKEN)=' >> .env.production || true
+        - env | grep -E '^(S3_BUCKET|S3_REGION|S3_NEWSLETTER_PREFIX|S3_IMAGE_PREFIX|UPLOAD_TOKEN|DRIVE_API_KEY|NEWSLETTER_FOLDER_ID)=' >> .env.production || true
         - npm run build
   artifacts:
     # SSR build: Amplify serves .next via Hosting compute.

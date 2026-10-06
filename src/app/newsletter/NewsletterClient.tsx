@@ -23,14 +23,9 @@ function isRecent(iso: string) {
   return ageMs < NEW_BADGE_DAYS * 24 * 60 * 60 * 1000
 }
 
-function thumbnailUrl(key: string) {
-  // Cover image from S3, with a generated fallback when none exists yet
-  return `/api/newsletter-thumb?key=${encodeURIComponent(key)}`
-}
-
-function fileUrl(key: string, download = false) {
-  const q = download ? '&download=1' : ''
-  return `/api/newsletter-file?key=${encodeURIComponent(key)}${q}`
+function thumbnailUrl(id: string) {
+  // First page of the PDF, proxied through our server so it always loads
+  return `/api/newsletter-thumb?id=${id}`
 }
 
 export default function NewsletterClient() {
@@ -151,7 +146,7 @@ export default function NewsletterClient() {
                       </button>
                       <a
                         className="newsletter-btn newsletter-btn--ghost"
-                        href={fileUrl(item.id, true)}
+                        href={`https://drive.google.com/uc?export=download&id=${item.id}`}
                         target="_blank"
                         rel="noreferrer"
                       >
@@ -183,7 +178,7 @@ export default function NewsletterClient() {
               <div className="newsletter-viewer__bar-actions">
                 <a
                   className="newsletter-btn newsletter-btn--ghost"
-                  href={fileUrl(activeItem.id, true)}
+                  href={`https://drive.google.com/uc?export=download&id=${activeItem.id}`}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -201,7 +196,7 @@ export default function NewsletterClient() {
             </header>
             <iframe
               className="newsletter-viewer__frame"
-              src={fileUrl(activeItem.id)}
+              src={`https://drive.google.com/file/d/${activeItem.id}/preview`}
               title={activeItem.title}
               allow="autoplay"
               allowFullScreen

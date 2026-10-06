@@ -17,18 +17,12 @@ body=$(curl -s -m 25 "$BASE/api/newsletters")
 echo "   $body" | head -c 400; echo
 check "GET /api/newsletters" "$(code "$BASE/api/newsletters")" "200"
 
-# Pull the first key out of the listing so the next tests use a real object.
-KEY=$(printf '%s' "$body" | sed -n 's/.*"id":"\([^"]*\)".*/\1/p' | head -1)
-if [ -n "$KEY" ]; then
-  echo "   first key: $KEY"
-  ENC=$(printf '%s' "$KEY" | sed 's|/|%2F|g')
-  echo
-  echo "2. File + cover for that key"
-  check "GET /api/newsletter-file (307 to S3)"  "$(code "$BASE/api/newsletter-file?key=$ENC")" "307"
-  check "GET /api/newsletter-file?download=1"   "$(code "$BASE/api/newsletter-file?key=$ENC&download=1")" "307"
-  check "GET /api/newsletter-thumb"             "$(code "$BASE/api/newsletter-thumb?key=$ENC")" "200"
+# Newsletters come from Google Drive, so ids are Drive file ids and the
+# S3 file/cover routes below do not apply to them.
+if printf '%s' "$body" | grep -q '"id"'; then
+  echo "   feed returned issues"
 else
-  echo "   (no PDFs listed - upload one to newsletters/ to test file + cover)"
+  echo "   (feed returned no issues - check DRIVE_API_KEY and folder sharing)"
 fi
 
 echo
@@ -45,8 +39,8 @@ check "upload without token"  "$(curl -s -o /dev/null -w '%{http_code}' -m 25 -X
 check "upload with bad token" "$(curl -s -o /dev/null -w '%{http_code}' -m 25 -X POST -H 'x-upload-token: nope' "$BASE/api/newsletter-upload")" "401"
 
 echo
-echo "5. Cover falls back when no image exists"
-check "placeholder cover"    "$(code "$BASE/api/newsletter-thumb?key=newsletters/Nothing_Here.pdf")" "200"
+echo "5. S3 file route still guards its prefix"
+check "S3 file route rejects bad key" "$(code "$BASE/api/newsletter-file?key=nope/x.pdf")" "400"
 
 echo
 echo "$pass passed, $fail failed"
