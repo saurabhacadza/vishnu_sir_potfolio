@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { LOGO } from "@/lib/constants";
 
 const ACAZDA_ORIGIN = "https://www.acadza.com";
 
@@ -125,27 +126,38 @@ export default function DostClient() {
             {/* Popup */}
             {showPopup ? (
                 <div className="popup">
+                    <button
+                        type="button"
+                        className="closeButton"
+                        aria-label="Close Dost card"
+                        onClick={() => router.push("/")}
+                    >
+                        ×
+                    </button>
+
                     <div className="popupContent">
-                        <button
-                            type="button"
-                            className="closeButton"
-                            aria-label="Close Dost card"
-                            onClick={() => router.push("/")}
-                        >
-                            ×
-                        </button>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img className="popupLogo" src={LOGO} alt="Vidya Bhumi" />
+
                         <h3 className="popupTitle">Enter Details</h3>
 
                         <input
                             type="text"
                             placeholder="Login ID"
+                            aria-label="Login ID"
+                            autoComplete="username"
                             value={loginId}
                             onChange={(e) => setLoginId(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") saveData();
+                            }}
                         />
 
                         <input
                             type="password"
                             placeholder="Password"
+                            aria-label="Password"
+                            autoComplete="current-password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             onKeyDown={(e) => {
@@ -201,83 +213,109 @@ export default function DostClient() {
           left: 0;
           width: 100%;
           height: 100%;
-          background: rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
+          background: rgba(255, 255, 255, 0.97);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
           display: flex;
           align-items: center;
           justify-content: center;
+          padding: 24px;
           z-index: 9999;
         }
 
+        /* Sits in the page corner, not on the card */
         .closeButton {
-          position: absolute;
-          top: 12px;
-          right: 12px;
-          width: 40px;
-          height: 32px;
+          position: fixed;
+          top: 18px;
+          right: 18px;
+          width: 44px;
+          height: 36px;
           border: none;
-          background: #ffffff;
-          color: #ff3b3b;
-          border-radius: 6px;
-          font-size: 20px;
+          background: #2563eb;
+          color: #ffffff;
+          border-radius: 8px;
+          font-size: 22px;
+          line-height: 1;
           font-weight: 600;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
           transition: background 0.15s ease;
+          z-index: 10000;
         }
 
         .closeButton:hover {
-          background: #f6f6f6;
+          background: #1d4ed8;
         }
 
         .popupContent {
-          background: #fff;
-          padding: 24px;
-          border-radius: 10px;
-          width: 360px;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+          width: 100%;
+          max-width: 560px;
           text-align: center;
-          position: relative;
-          padding-top: 48px;
+        }
+
+        .popupLogo {
+          display: block;
+          width: 150px;
+          max-width: 60%;
+          height: auto;
+          margin: 0 auto 18px;
         }
 
         .popupTitle {
-          margin: 0 0 16px;
-          color: #1f2937;
-          font-size: 24px;
-          font-weight: 700;
-          line-height: 1.2;
+          margin: 0 0 32px;
+          color: #14233f;
+          font-size: clamp(34px, 6vw, 54px);
+          font-weight: 800;
+          letter-spacing: -0.5px;
+          line-height: 1.1;
         }
 
         .popupContent input {
-          width: 92%;
-          padding: 10px;
-          margin: 10px 0;
-          border: 1px solid #ccc;
-          border-radius: 5px;
+          display: block;
+          width: 100%;
+          padding: 18px 20px;
+          margin: 0 0 18px;
+          font-size: 16px;
+          color: #14233f;
+          background: #f8f9fb;
+          border: 1px solid #e4e7ec;
+          border-radius: 10px;
           outline: none;
+          transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .popupContent input::placeholder {
+          color: #9aa3b2;
+        }
+
+        .popupContent input:focus {
+          border-color: #2563eb;
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
 
         .popupContent button {
-          background: #007bff;
+          background: #1a8cff;
           color: white;
-          padding: 10px 18px;
+          padding: 14px 34px;
+          margin-top: 8px;
+          font-size: 16px;
+          font-weight: 600;
           border: none;
-          border-radius: 5px;
+          border-radius: 8px;
           cursor: pointer;
+          transition: background 0.15s ease;
         }
 
         .popupContent button:hover {
-          background: #0056b3;
+          background: #0b6fd6;
         }
 
         .error {
-          color: red;
+          color: #dc2626;
           font-size: 14px;
-          margin-top: 5px;
+          margin: 0 0 10px;
         }
       `}</style>
         </div>
